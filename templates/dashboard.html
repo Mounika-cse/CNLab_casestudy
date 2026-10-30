@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SecureMail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">✉ SecureMail</div>
+
+            <div class="user-box">
+                <div class="avatar">{{ user.username[0]|upper }}</div>
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.email }}</small>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-link active" href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+                <a class="nav-link" href="{{ url_for('inbox') }}">📥 Inbox</a>
+                <a class="nav-link" href="{{ url_for('compose') }}">✏️ Compose Email</a>
+                <a class="nav-link" href="{{ url_for('sent') }}">📤 Sent Messages</a>
+                <a class="nav-link" href="{{ url_for('attachments') }}">📎 Attachments</a>
+                <a class="nav-link" href="{{ url_for('network') }}">📡 Network Monitor</a>
+            </nav>
+
+            <form class="logout-form" action="{{ url_for('logout') }}" method="post">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Dashboard</h2>
+                <span class="status">● SecureMail Active</span>
+            </header>
+
+            <section class="welcome-banner">
+                <div>
+                    <p class="eyebrow">WELCOME BACK</p>
+                    <h2>Hello, {{ user.username }}!</h2>
+                    <p>Manage your messages and monitor your SMTP communication.</p>
+                </div>
+                <div class="banner-icon">✉</div>
+            </section>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>📥 Inbox Messages</h3>
+                    <h2>{{ inbox_count }}</h2>
+                    <p>Total received emails</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>📤 Sent Messages</h3>
+                    <h2>{{ sent_count }}</h2>
+                    <p>Total sent emails</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>📡 SMTP Protocol</h3>
+                    <h2>1025</h2>
+                    <p>Local SMTP server port</p>
+                </div>
+            </section>
+
+            <section class="mail-panel">
+                <div class="panel-heading">
+                    <h2>Recent Emails</h2>
+                    <a class="action-link" href="{{ url_for('inbox') }}">View Inbox</a>
+                </div>
+
+                {% if recent_emails %}
+                    {% for email in recent_emails %}
+                        <article class="message-card">
+                            <div class="message-top">
+                                <h3>{{ email.subject }}</h3>
+                                <small>{{ email.sent_at }}</small>
+                            </div>
+                            <p class="message-body">{{ email.body }}</p>
+
+                            {% if email.attachments %}
+                                <p>📎 {{ email.attachments|length }} attachment(s)</p>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <h3>No recent emails</h3>
+                        <p>Your received messages will appear here.</p>
+                        <a class="action-link" href="{{ url_for('compose') }}">Compose Email</a>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

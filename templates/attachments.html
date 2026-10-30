@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attachments - SecureMail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">✉ SecureMail</div>
+
+            <div class="user-box">
+                <div class="avatar">{{ user.username[0]|upper }}</div>
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.email }}</small>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+                <a class="nav-link" href="{{ url_for('inbox') }}">📥 Inbox</a>
+                <a class="nav-link" href="{{ url_for('compose') }}">✏️ Compose Email</a>
+                <a class="nav-link" href="{{ url_for('sent') }}">📤 Sent Messages</a>
+                <a class="nav-link active" href="{{ url_for('attachments') }}">📎 Attachments</a>
+                <a class="nav-link" href="{{ url_for('network') }}">📡 Network Monitor</a>
+            </nav>
+
+            <form class="logout-form" action="{{ url_for('logout') }}" method="post">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Attachments</h2>
+                <span class="status">MIME File Transfer</span>
+            </header>
+
+            <section class="mail-panel mail-page">
+                <div class="panel-heading">
+                    <h2>My Attachments</h2>
+                </div>
+
+                {% if files %}
+                    {% for file in files %}
+                        <article class="message-card">
+                            <h3>📎 {{ file.filename }}</h3>
+                            <p><strong>Size:</strong> {{ (file.file_size / 1024)|round(1) }} KB</p>
+                            <p><strong>Email Subject:</strong> {{ file.email.subject }}</p>
+                            <p><strong>Content Type:</strong> {{ file.content_type }}</p>
+
+                            <a class="attachment-link"
+                               href="{{ url_for('download_attachment', attachment_id=file.id) }}">
+                                Download Attachment
+                            </a>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📎</div>
+                        <h3>No Attachments</h3>
+                        <p>Files sent or received through SecureMail will appear here.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

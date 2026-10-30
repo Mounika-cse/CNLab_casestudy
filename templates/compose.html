@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Email - SecureMail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">✉ SecureMail</div>
+
+            <div class="user-box">
+                <div class="avatar">{{ user.username[0]|upper }}</div>
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.email }}</small>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+                <a class="nav-link" href="{{ url_for('inbox') }}">📥 Inbox</a>
+                <a class="nav-link active" href="{{ url_for('compose') }}">✏️ Compose Email</a>
+                <a class="nav-link" href="{{ url_for('sent') }}">📤 Sent Messages</a>
+                <a class="nav-link" href="{{ url_for('attachments') }}">📎 Attachments</a>
+                <a class="nav-link" href="{{ url_for('network') }}">📡 Network Monitor</a>
+            </nav>
+
+            <form class="logout-form" action="{{ url_for('logout') }}" method="post">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Compose Email</h2>
+                <span class="status">SMTP Enabled</span>
+            </header>
+
+            <section class="mail-panel mail-page">
+                <div class="panel-heading">
+                    <h2>New Message</h2>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endwith %}
+
+                <form class="compose-form" method="post" enctype="multipart/form-data">
+                    <label>From</label>
+                    <input type="email" value="{{ user.email }}" readonly>
+
+                    <label>To</label>
+                    <input type="email" name="receiver"
+                           placeholder="Enter registered receiver email" required>
+
+                    <label>Subject</label>
+                    <input type="text" name="subject"
+                           placeholder="Enter subject" maxlength="200" required>
+
+                    <label>Message</label>
+                    <textarea name="body" rows="8"
+                              placeholder="Write your message here..." required></textarea>
+
+                    <label>Attachment</label>
+                    <input type="file" name="attachment"
+                           accept=".pdf,.txt,.png,.jpg,.jpeg">
+
+                    <p>Supported: PDF, TXT, PNG, JPG, JPEG. Maximum 10 MB.</p>
+
+                    <button class="primary-btn" type="submit">
+                        📤 Send Email via SMTP
+                    </button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

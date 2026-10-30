@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | SecureMail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-brand">
+            <div class="brand-icon">✉</div>
+            <h1>SecureMail</h1>
+            <p>Private communication, simplified.</p>
+        </div>
+
+        <div class="auth-card">
+            <h2>Welcome back</h2>
+            <p class="subtitle">Sign in to your SecureMail account</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="Enter your email" required>
+
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter your password" required>
+
+                <button type="submit" class="primary-btn">Sign In</button>
+            </form>
+
+            <p class="auth-footer">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Create account</a>
+            </p>
+        </div>
+        <p class="auth-note">SecureMail • Computer Networks Project</p>
+    </div>
+</body>
+</html>

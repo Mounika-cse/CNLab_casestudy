@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitor - SecureMail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">✉ SecureMail</div>
+
+            <div class="user-box">
+                <div class="avatar">{{ user.username[0]|upper }}</div>
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.email }}</small>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+                <a class="nav-link" href="{{ url_for('inbox') }}">📥 Inbox</a>
+                <a class="nav-link" href="{{ url_for('compose') }}">✏️ Compose Email</a>
+                <a class="nav-link" href="{{ url_for('sent') }}">📤 Sent Messages</a>
+                <a class="nav-link" href="{{ url_for('attachments') }}">📎 Attachments</a>
+                <a class="nav-link active" href="{{ url_for('network') }}">📡 Network Monitor</a>
+            </nav>
+
+            <form class="logout-form" action="{{ url_for('logout') }}" method="post">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Network Monitor</h2>
+                <span class="status">SMTP / TCP Monitoring</span>
+            </header>
+
+            <section class="welcome-banner">
+                <div>
+                    <p class="eyebrow">NETWORK ACTIVITY</p>
+                    <h2>SMTP Transmission Monitor</h2>
+                    <p>Monitor email transmission, server availability and protocol activity.</p>
+                </div>
+                <div class="banner-icon">📡</div>
+            </section>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>SMTP Server</h3>
+                    <h2>
+                        {% if smtp_online %}
+                            Online
+                        {% else %}
+                            Offline
+                        {% endif %}
+                    </h2>
+                    <p>127.0.0.1 : 1025</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Successful Transmissions</h3>
+                    <h2>{{ success_count }}</h2>
+                    <p>Accepted by SMTP server</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Failed Transmissions</h3>
+                    <h2>{{ failed_count }}</h2>
+                    <p>Failed SMTP attempts</p>
+                </div>
+            </section>
+
+            <section class="mail-panel">
+                <div class="panel-heading">
+                    <h2>SMTP Transmission History</h2>
+                    <a class="action-link" href="{{ url_for('network') }}">Refresh</a>
+                </div>
+
+                {% if logs %}
+                    {% for log in logs %}
+                        <article class="message-card">
+                            <div class="message-top">
+                                <h3>{{ log.subject }}</h3>
+                                <span class="message-badge">{{ log.status }}</span>
+                            </div>
+
+                            <p><strong>From:</strong> {{ log.sender }}</p>
+                            <p><strong>To:</strong> {{ log.receiver }}</p>
+                            <p><strong>Protocol:</strong> {{ log.protocol }}</p>
+                            <p><strong>Port:</strong> {{ log.port }}</p>
+                            <p><strong>Timestamp:</strong> {{ log.timestamp }}</p>
+                            <p><strong>Details:</strong> {{ log.details }}</p>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📡</div>
+                        <h3>No Network Activity Yet</h3>
+                        <p>Send a new email to generate an SMTP transmission log.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox - SecureMail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">✉ SecureMail</div>
+
+            <div class="user-box">
+                <div class="avatar">{{ user.username[0]|upper }}</div>
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.email }}</small>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-link" href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+                <a class="nav-link active" href="{{ url_for('inbox') }}">📥 Inbox</a>
+                <a class="nav-link" href="{{ url_for('compose') }}">✏️ Compose Email</a>
+                <a class="nav-link" href="{{ url_for('sent') }}">📤 Sent Messages</a>
+                <a class="nav-link" href="{{ url_for('attachments') }}">📎 Attachments</a>
+                <a class="nav-link" href="{{ url_for('network') }}">📡 Network Monitor</a>
+            </nav>
+
+            <form class="logout-form" action="{{ url_for('logout') }}" method="post">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Inbox</h2>
+                <span class="status">Received Messages</span>
+            </header>
+
+            <section class="mail-panel mail-page">
+                <div class="panel-heading">
+                    <h2>Your Inbox</h2>
+                    <a class="action-link" href="{{ url_for('compose') }}">New Email</a>
+                </div>
+
+                {% if emails %}
+                    {% for email in emails %}
+                        <article class="message-card">
+                            <div class="message-top">
+                                <h3>{{ email.subject }}</h3>
+                                <small>{{ email.sent_at }}</small>
+                            </div>
+
+                            <p class="message-body">{{ email.body }}</p>
+
+                            {% if email.attachments %}
+                                <div class="attachment-list">
+                                    <strong>📎 Attachments</strong>
+
+                                    {% for file in email.attachments %}
+                                        <a class="attachment-link"
+                                           href="{{ url_for('download_attachment', attachment_id=file.id) }}">
+                                            {{ file.filename }} — Download
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📥</div>
+                        <h3>Your Inbox is Empty</h3>
+                        <p>Received emails will appear here.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>
